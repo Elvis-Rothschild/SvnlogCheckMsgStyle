@@ -14,11 +14,13 @@ public class SvnlogCheckMsgStyleMain {
 
     private int count = 0;
     private int total = 0;
+    private static int countAll = 0;
+    private static int totalAll = 0;
     private static File logFile = null;
 
     private SubmitData submitData = null;
 
-    private final HashMap<String, ArrayList<SubmitData>> mapRecord = new HashMap<String, ArrayList<SubmitData>>();
+    private HashMap<String, ArrayList<SubmitData>> mapRecord = new HashMap<String, ArrayList<SubmitData>>();
     private ArrayList<SubmitData> listRecord = null;
 
     private Document document = null; /*日志xml文档*/
@@ -82,7 +84,15 @@ public class SvnlogCheckMsgStyleMain {
 //			dealLog();
         }
 
+        // 输出结果排序：有疑似不合规数的优先展示
         content+=contentDelay;
+
+        // 输出结果汇总：统计所有审计文件的数据
+        content = "<h3>总审计代码路径数：" + fileNum + "</h3>"
+                + "<h3>所有审计代码路径的总提交数：" + totalAll + "</h3>"
+                + "<h3>所有审计代码路径的疑似不合规数：" + countAll + "</h3>"
+                + content;
+
         SendEmail.sendEmail(content);
     }
 
@@ -352,6 +362,8 @@ public class SvnlogCheckMsgStyleMain {
         System.out.println("总提交数：" + this.total);
         System.out.println("疑似不合规数：" + this.count);
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++");
+        totalAll += total;
+        countAll += count;
 
         if (this.count != 0) {
             content += "<hr>";
